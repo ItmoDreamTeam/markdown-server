@@ -1,6 +1,7 @@
 module.exports = function (app, db) {
     //get all
     app.get('/api/md', (req, res) => {
+        res.set('Access-Control-Allow-Origin', '*');
         db.collection('md').find({}).toArray(function (error, result) {
             if (error) {
                 res.status(400);
@@ -14,6 +15,7 @@ module.exports = function (app, db) {
 
     //create
     app.post('/api/md', (req, res) => {
+        res.set('Access-Control-Allow-Origin', '*');
         db.collection('md').findOne({'_id': req.body.name}, (error, result) => {
             if (result) {
                 res.status(409);
@@ -33,6 +35,7 @@ module.exports = function (app, db) {
 
     //edit
     app.put('/api/md/:name', (req, res) => {
+        res.set('Access-Control-Allow-Origin', '*');
         db.collection('md').findOne({'_id': req.params.name}, (error, result) => {
             if (result) {
                 db.collection('md').updateOne({'_id': req.params.name}, {$set: {'content': req.body.content}}, (error, result) => {
@@ -52,6 +55,7 @@ module.exports = function (app, db) {
 
     //delete
     app.delete('/api/md/:name', (req, res) => {
+        res.set('Access-Control-Allow-Origin', '*');
         db.collection('md').findOne({'_id': req.params.name}, (error, result) => {
             if (result) {
                 db.collection('md').deleteOne({'_id': req.params.name}, (error, result) => {
@@ -67,5 +71,12 @@ module.exports = function (app, db) {
                 res.send("MD with name '" + req.params.name + "' not found");
             }
         })
+    });
+
+    app.options('/*', (req, res) => {
+        res.set('Access-Control-Allow-Origin', '*');
+        res.set('Access-Control-Allow-Methods', 'OPTIONS, GET, HEAD, POST, PUT, DELETE');
+        res.status(200);
+        res.send(null);
     });
 };
